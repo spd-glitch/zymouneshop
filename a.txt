@@ -1,0 +1,58 @@
+const Application = require('../models/Application');
+const User = require('../models/User');
+
+// Entrepreneur submits application
+const submitApplication = async (req, res) => {
+  try {
+    const applicantId = req.session?.userId || req.body.applicantId; // temporary
+    const app = await Application.create({ ...req.body, applicant: applicantId });
+    res.status(201).json({ success: true, data: app });
+  } catch (error) {
+    res.status(400).json({ success: false, message: 'Failed to submit application', error: error.message });
+  }
+};
+
+// Admin: list pending
+const listPending = async (req, res) => {
+  try {
+    const apps = await Application.find({ status: 'pending' }).populate('applicant', 'firstName lastName email');
+    res.render('admin/applications', { applications: apps });
+  } catch (error) {
+    res.status(500).render('error', { title: 'Server Error', message: 'Unable to load applications', error });
+  }
+};
+
+// Admin: approve or reject
+const reviewApplication = async (req, res) => {
+  try {
+    const { status, notes } = req.body; // approved|rejected
+    const app = await Application.findByIdAndUpdate(
+      req.params.id,
+      { status, notes, reviewedBy: req.session?.userId, reviewedAt: new Date() },
+      { new: true }
+    ).populate('applicant');
+
+    if (!app) return res.status(404).json({ success: false, message: 'Application not found' });
+
+  
+    if (status === 'approved') {
+      await User.findByIdAndUpdate(app.applicant._id, {
+        role: 'entrepreneur',
+        'entrepreneur.businessName': app.businessName,
+        'entrepreneur.categories': app.categories,
+        'entrepreneur.website': app.website,
+        'entrepreneur.verified': true
+      });
+    }
+
+    res.json({ success: true, data: app });
+  } catch (error) {
+    res.status(400).json({ success: false, message: 'Failed to review application', error: error.message });
+  }
+};
+
+module.exports = {
+  submitApplication,
+  listPending,
+  reviewApplication
+};

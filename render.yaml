@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: feeds-store-api
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://trinavaldezmalit4_db_user:feedsupply@cluster0.zlha3qw.mongodb.net/feeds_store?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: feeds-store-super-secret-key-2024
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      - key: SENDGRID_API_KEY
+        fromGroup: email-config
+      - key: EMAIL_FROM
+        value: zymouneshop@gmail.com
