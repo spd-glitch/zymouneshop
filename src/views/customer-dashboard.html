@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - ZYMOUNE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .welcome-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-section p {
+            color: #666;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            color: #666;
+        }
+        
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .product-card {
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .product-info {
+            padding: 1rem;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-category {
+            color: #667eea;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        
+        .product-stock {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design - Tablet (768px to 1023px) */
+        @media (max-width: 1023px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .header {
+                padding: 1rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .welcome-section {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .welcome-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stat-card {
+                padding: 1.2rem;
+            }
+
+            .stat-card h3 {
+                font-size: 1.8rem;
+            }
+
+            .stat-card p {
+                font-size: 0.9rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .product-card {
+                border-radius: 8px;
+            }
+
+            .product-image {
+                height: 150px;
+                font-size: 2.5rem;
+            }
+
+            .product-info {
+                padding: 0.75rem;
+            }
+
+            .product-name {
+                font-size: 0.95rem;
+            }
+
+            .product-category {
+                font-size: 0.85rem;
+            }
+
+            .product-price {
+                font-size: 1rem;
+            }
+
+            .product-stock {
+                font-size: 0.85rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.3rem;
+                margin-bottom: 1.2rem;
+            }
+        }
+
+        /* Responsive Design - Mobile (480px to 767px) */
+        @media (max-width: 767px) {
+            body {
+                font-size: 14px;
+            }
+
+            .header {
+                padding: 0.75rem 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+                gap: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .welcome-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .welcome-section h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .welcome-section p {
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-card h3 {
+                font-size: 1.5rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .stat-card p {
+                font-size: 0.8rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .product-image {
+                height: 120px;
+                font-size: 2rem;
+            }
+
+            .product-info {
+                padding: 0.6rem;
+            }
+
+            .product-name {
+                font-size: 0.85rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                margin-bottom: 0.3rem;
+            }
+
+            .product-category {
+                font-size: 0.75rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .product-price {
+                font-size: 0.95rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .product-stock {
+                font-size: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .btn {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.8rem;
+            }
+
+            .section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .section h2 {
+                font-size: 1.1rem;
+                margin-bottom: 0.8rem;
+            }
+        }
+
+        /* Responsive Design - Small Mobile (Below 480px) */
+        @media (max-width: 479px) {
+            * {
+                font-size: 12px;
+            }
+
+            .header {
+                padding: 0.5rem 0.75rem;
+                gap: 0.25rem;
+            }
+
+            .logo {
+                font-size: 0.95rem;
+            }
+
+            .user-info {
+                gap: 0.25rem;
+            }
+
+            .logout-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .container {
+                padding: 0.75rem;
+            }
+
+            .welcome-section {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .welcome-section h1 {
+                font-size: 1.1rem;
+            }
+
+            .welcome-section p {
+                font-size: 0.85rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .stat-card p {
+                font-size: 0.7rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 0.5rem;
+            }
+
+            .product-image {
+                height: 100px;
+                font-size: 1.5rem;
+            }
+
+            .product-info {
+                padding: 0.5rem;
+            }
+
+            .product-name {
+                font-size: 0.75rem;
+            }
+
+            .product-category {
+                font-size: 0.7rem;
+            }
+
+            .product-price {
+                font-size: 0.85rem;
+            }
+
+            .product-stock {
+                font-size: 0.7rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .btn {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.7rem;
+            }
+
+            .section {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .section h2 {
+                font-size: 0.95rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .loading,
+            .error {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🐔🐷 ZYMOUNE</div>
+        <div class="user-info">
+            <span id="userName">Welcome, Customer!</span>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-section">
+            <h1 id="welcomeMessage">Welcome to your Dashboard!</h1>
+            <p>Browse our premium chicken feeds, pig feeds, and supplements</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalProducts">0</h3>
+                <p>Total Products</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="chickenFeedsCount">0</h3>
+                <p>Chicken Feeds</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="pigFeedsCount">0</h3>
+                <p>Pig Feeds</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="supplementsCount">0</h3>
+                <p>Supplements</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Featured Products</h2>
+            <div id="featuredProducts" class="products-grid">
+                <div class="loading">Loading featured products...</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Chicken Feeds</h2>
+            <div id="chickenFeeds" class="products-grid">
+                <div class="loading">Loading chicken feeds...</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Pig Feeds</h2>
+            <div id="pigFeeds" class="products-grid">
+                <div class="loading">Loading pig feeds...</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Supplements</h2>
+            <div id="supplements" class="products-grid">
+                <div class="loading">Loading supplements...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http:
+        let user = null;
+        
+        
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const userData = localStorage.getItem('user');
+            
+            if (!token || !userData) {
+                window.location.href = './customer-dashboard.html';
+                return;
+            }
+            
+            user = JSON.parse(userData);
+            document.getElementById('userName').textContent = `Welcome, ${user.firstName}!`;
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${user.firstName}!`;
+        }
+        
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = './login.html';
+        }
+        
+        
+        function createProductCard(product) {
+            const stockStatus = product.stock > 0 ? 
+                `<div class="product-stock">In Stock: ${product.stock} ${product.unit}</div>` :
+                `<div class="product-stock" style="color: #dc3545;">Out of Stock</div>`;
+            
+            return `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${product.category === 'chicken-feeds' ? '🐔' : 
+                          product.category === 'pig-feeds' ? '🐷' : '💊'}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-category">${product.category.replace('-', ' ').toUpperCase()}</div>
+                        <div class="product-price">$${product.price}</div>
+                        ${stockStatus}
+                        <button class="btn" ${product.stock === 0 ? 'disabled' : ''} 
+                                onclick="addToCart('${product._id}')">
+                            ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        
+        function addToCart(productId) {
+            alert('Add to cart functionality will be implemented!');
+        }
+        
+        
+        async function loadDashboard() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/dashboard/customer`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    
+                    document.getElementById('totalProducts').textContent = data.stats.totalProducts;
+                    document.getElementById('chickenFeedsCount').textContent = data.stats.chickenFeedsCount;
+                    document.getElementById('pigFeedsCount').textContent = data.stats.pigFeedsCount;
+                    document.getElementById('supplementsCount').textContent = data.stats.supplementsCount;
+                    
+                    
+                    const featuredContainer = document.getElementById('featuredProducts');
+                    if (data.featuredProducts.length > 0) {
+                        featuredContainer.innerHTML = data.featuredProducts.map(createProductCard).join('');
+                    } else {
+                        featuredContainer.innerHTML = '<div class="loading">No featured products available</div>';
+                    }
+                    
+                    
+                    document.getElementById('chickenFeeds').innerHTML = 
+                        data.categories.chickenFeeds.map(createProductCard).join('');
+                    document.getElementById('pigFeeds').innerHTML = 
+                        data.categories.pigFeeds.map(createProductCard).join('');
+                    document.getElementById('supplements').innerHTML = 
+                        data.categories.supplements.map(createProductCard).join('');
+                        
+                } else if (response.status === 401) {
+                    logout();
+                } else {
+                    throw new Error('Failed to load dashboard');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.querySelector('.container').innerHTML = 
+                    '<div class="error">Failed to load dashboard. Please try again.</div>';
+            }
+        }
+        
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadDashboard();
+            
+            
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+        });
+    </script>
+</body>
+</html>
